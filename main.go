@@ -11,9 +11,9 @@ func main() {
 	w := getWindow()
 
 	tabs := container.NewAppTabs(
-		container.NewTabItem("Main", widget.NewLabel("Main")),
-		container.NewTabItem("Logs", widget.NewLabel("Logs")),
-		container.NewTabItem("About", widget.NewLabel("About")),
+		container.NewTabItem("Main", getMainTab()),
+		container.NewTabItem("Logs", getLogsTab()),
+		container.NewTabItem("About", getAboutTab()),
 	)
 
 	tabs.SetTabLocation(container.TabLocationLeading)
@@ -23,7 +23,15 @@ func main() {
 }
 
 func getMainTab() fyne.CanvasObject {
+	return widget.NewLabel("Main")
+}
 
+func getLogsTab() fyne.CanvasObject {
+	return widget.NewLabel("Logs")
+}
+
+func getAboutTab() fyne.CanvasObject {
+	return widget.NewLabel("About")
 }
 
 func getWindow() fyne.Window {

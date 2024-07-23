@@ -1,7 +1,7 @@
 .PHONY: test build upgrade run
 
 help:
-	@echo make [test, upgrade, build]
+	@echo make [intall, run, test, upgrade, build]
 
 test:
 	go test ./...
