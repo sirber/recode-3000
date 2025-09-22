@@ -5,6 +5,7 @@ import 'package:recode3000/models/source.dart';
 import 'package:recode3000/services/handbrake_cli.dart';
 import 'package:recode3000/widgets/video_codec.dart';
 import 'package:recode3000/widgets/audio_codec.dart';
+import 'package:recode3000/widgets/file_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -106,47 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 final paths = details.files.map((f) => f.path).toList();
                 _addFiles(paths);
               },
-              child: Card(
-                margin: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Files to recode',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          tooltip: 'Add files',
-                          onPressed: _pickFiles,
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: _files.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'Drag and drop files here or click +',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            )
-                          : ListView.builder(
-                              itemCount: _files.length,
-                              itemBuilder: (context, idx) => ListTile(
-                                title: Text(_files[idx].filename),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () => _removeFile(idx),
-                                ),
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
+              child: FileListCard(
+                files: _files,
+                onAddFiles: _pickFiles,
+                onRemoveFile: _removeFile,
               ),
             ),
           ),
