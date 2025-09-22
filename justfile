@@ -34,3 +34,7 @@ build-all:
     just build-mac
     just build-windows
     just build-linux
+
+# Run tests
+test:
+    flutter test
