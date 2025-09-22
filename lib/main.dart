@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recode3000/pages/my_home_page.dart';
+import 'package:recode3000/pages/main.dart';
 import 'package:window_manager/window_manager.dart';
 
 const title = "Recode 3000";
