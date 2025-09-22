@@ -32,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _videoBitrate = 1000;
+  int _audioBitrate = 128;
   final List<SourceDTO> _files = [];
   final HandBrakeCliService _cli = HandBrakeCliService();
 
@@ -165,6 +167,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           _selectedVideoCodec = value;
                         });
                       },
+                      bitrate: _videoBitrate,
+                      onBitrateChanged: (value) {
+                        setState(() {
+                          _videoBitrate = value;
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -176,6 +184,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       onChanged: (value) {
                         setState(() {
                           _selectedAudioCodec = value;
+                        });
+                      },
+                      bitrate: _audioBitrate,
+                      onBitrateChanged: (value) {
+                        setState(() {
+                          _audioBitrate = value;
                         });
                       },
                     ),
