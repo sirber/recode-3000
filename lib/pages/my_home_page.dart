@@ -7,15 +7,15 @@ import 'package:recode3000/widgets/video_codec.dart';
 import 'package:recode3000/widgets/audio_codec.dart';
 import 'package:recode3000/widgets/file_list.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key, required this.title});
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   int _videoBitrate = 1000;
   int _audioBitrate = 128;
   final List<SourceDTO> _files = [];

@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: title,
       theme: ThemeData(),
-      home: MyHomePage(title: title),
+      home: MainPage(title: title),
     );
   }
 }
