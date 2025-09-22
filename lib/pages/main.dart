@@ -87,6 +87,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Column(
         children: [
@@ -155,11 +156,14 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       bottomNavigationBar: Container(
-        color: Colors.grey[200],
+        color: isDark ? Colors.grey[900] : Colors.grey[200],
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Text(
           _status,
-          style: const TextStyle(fontSize: 16),
+          style: TextStyle(
+            fontSize: 16,
+            color: isDark ? Colors.white : Colors.black,
+          ),
         ),
       ),
     );
