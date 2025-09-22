@@ -8,6 +8,10 @@ default:
 dev:
     flutter run
 
+# Remove build artifacts
+clean:
+    flutter clean
+
 # Build for macOS
 build-mac:
     flutter build macos --release
@@ -25,7 +29,3 @@ build-all:
     just build-mac
     just build-windows
     just build-linux
-
-# Clean build artifacts
-clean:
-    flutter clean
