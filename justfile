@@ -4,6 +4,10 @@
 default:
     just --list
 
+# Update Flutter/Dart dependencies
+bootstrap:
+    flutter pub get
+
 # Run the app in debug mode
 dev:
     flutter run
@@ -11,6 +15,7 @@ dev:
 # Remove build artifacts
 clean:
     flutter clean
+    just bootstrap
 
 # Build for macOS
 build-mac:
