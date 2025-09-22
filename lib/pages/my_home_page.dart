@@ -7,23 +7,6 @@ import 'package:recode3000/widgets/video_codec.dart';
 import 'package:recode3000/widgets/audio_codec.dart';
 import 'package:recode3000/widgets/file_list.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Recode 3000',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const MyHomePage(title: 'Recode 3000'),
-    );
-  }
-}
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
