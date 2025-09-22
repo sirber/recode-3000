@@ -20,7 +20,9 @@ class _MainPageState extends State<MainPage> {
   int _audioBitrate = 128;
   final List<SourceDTO> _files = [];
   final HandBrakeCliService _cli = HandBrakeCliService();
+  String _status = '';
 
+  final ScrollController _fileListScrollController = ScrollController();
 
   List<String> _videoCodecs = [];
   String? _selectedVideoCodec;
@@ -33,8 +35,14 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-  super.initState();
-  _fetchVideoCodecs();
+    super.initState();
+    _fetchVideoCodecs();
+  }
+
+  @override
+  void dispose() {
+    _fileListScrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchVideoCodecs() async {
@@ -82,9 +90,8 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Column(
         children: [
-          // File list + drag-drop
+          // File list + drag-drop (card handles its own scrolling)
           Expanded(
-            flex: 2,
             child: DropTarget(
               onDragDone: (details) {
                 final paths = details.files.map((f) => f.path).toList();
@@ -97,9 +104,9 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
           ),
-          // Codec dropdowns (full width)
-          Expanded(
-            flex: 1,
+          // Codec dropdowns (fixed height)
+          SizedBox(
+            height: 240,
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
@@ -146,6 +153,14 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.grey[200],
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text(
+          _status,
+          style: const TextStyle(fontSize: 16),
+        ),
       ),
     );
   }

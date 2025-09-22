@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recode3000/models/source.dart';
 
-class FileListCard extends StatelessWidget {
+class FileListCard extends StatefulWidget {
   final List<SourceDTO> files;
   final void Function() onAddFiles;
   final void Function(int) onRemoveFile;
@@ -12,6 +12,19 @@ class FileListCard extends StatelessWidget {
     required this.onAddFiles,
     required this.onRemoveFile,
   });
+
+  @override
+  State<FileListCard> createState() => _FileListCardState();
+}
+
+class _FileListCardState extends State<FileListCard> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +44,30 @@ class FileListCard extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.add),
                 tooltip: 'Add files',
-                onPressed: onAddFiles,
+                onPressed: widget.onAddFiles,
               ),
             ],
           ),
           Expanded(
-            child: files.isEmpty
+            child: widget.files.isEmpty
                 ? const Center(
                     child: Text(
                       'Drag and drop files here or click +',
                       style: TextStyle(color: Colors.blue),
                     ),
                   )
-                : ListView.builder(
-                    itemCount: files.length,
-                    itemBuilder: (context, idx) => ListTile(
-                      title: Text(files[idx].filename),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => onRemoveFile(idx),
+                : Scrollbar(
+                    controller: _scrollController,
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: widget.files.length,
+                      itemBuilder: (context, idx) => ListTile(
+                        title: Text(widget.files[idx].filename),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => widget.onRemoveFile(idx),
+                        ),
                       ),
                     ),
                   ),
