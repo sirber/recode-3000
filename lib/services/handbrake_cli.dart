@@ -1,13 +1,12 @@
 import 'dart:io';
 
-
 class HandBrakeCliService {
   final String executablePath;
   static const List<String> audioCodecs = [
-    'mp3',
     'opus',
     'vorbis',
     'av_aac',
+    'mp3',
   ];
   static List<String>? _cachedVideoCodecs;
   static bool _fetching = false;
