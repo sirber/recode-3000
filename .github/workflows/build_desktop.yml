@@ -18,9 +18,9 @@ jobs:
       - run: flutter build macos --release
       - name: Zip macOS app
         run: |
-          cd build/macos/Build/Products/Release
-          zip -r "${{ github.repository }}-macos.zip" *.app
-          mv "${{ github.repository }}-macos.zip" "$GITHUB_WORKSPACE/"
+          repo="${GITHUB_REPOSITORY//\//-}"
+          cd build/macos/Build/Products/Release || exit 1
+          zip -r "$GITHUB_WORKSPACE/${repo}-macos.zip" *.app
       - name: Upload macOS zip to release
         uses: actions/upload-release-asset@v1
         env:
@@ -45,7 +45,9 @@ jobs:
       - name: Zip Windows app
         shell: pwsh
         run: |
-          $out = "${{ github.workspace }}\${{ github.repository }}-windows.zip"
+          $repo = $env:GITHUB_REPOSITORY -replace '/', '-'
+          $out = Join-Path $env:GITHUB_WORKSPACE "$repo-windows.zip"
+          if (-Not (Test-Path -Path "build\windows\x64\runner\Release")) { Write-Host 'Windows release folder not found'; exit 1 }
           Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath $out -Force
       - name: Upload Windows zip to release
         uses: actions/upload-release-asset@v1
@@ -72,9 +74,9 @@ jobs:
       - run: flutter build linux --release
       - name: Zip Linux bundle
         run: |
-          cd build/linux/x64/release
-          zip -r "${{ github.repository }}-linux.zip" bundle
-          mv "${{ github.repository }}-linux.zip" "$GITHUB_WORKSPACE/"
+          repo="${GITHUB_REPOSITORY//\//-}"
+          cd build/linux/x64/release || exit 1
+          zip -r "$GITHUB_WORKSPACE/${repo}-linux.zip" bundle
       - name: Upload Linux zip to release
         uses: actions/upload-release-asset@v1
         env:
