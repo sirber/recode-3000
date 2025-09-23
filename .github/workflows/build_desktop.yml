@@ -16,19 +16,25 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: flutter build macos --release
+      - name: Set sanitized repo name
+        id: repo_name
+        run: echo "repo=${GITHUB_REPOSITORY//\//-}" >> $GITHUB_OUTPUT
       - name: Zip macOS app
         run: |
-          repo="${GITHUB_REPOSITORY//\//-}"
           cd build/macos/Build/Products/Release || exit 1
-          zip -r "$GITHUB_WORKSPACE/${repo}-macos.zip" *.app
+          zip -r "$GITHUB_WORKSPACE/${{ steps.repo_name.outputs.repo }}-macos.zip" *.app
+      - name: Verify macOS zip
+        run: |
+          echo "Workspace files:"; ls -la $GITHUB_WORKSPACE || true
+          if [ ! -f "$GITHUB_WORKSPACE/${{ steps.repo_name.outputs.repo }}-macos.zip" ]; then echo "macOS zip not found"; ls -la $GITHUB_WORKSPACE; exit 1; fi
       - name: Upload macOS zip to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ github.workspace }}/${{ github.repository }}-macos.zip
-          asset_name: ${{ github.repository }}-macos.zip
+          asset_path: ${{ github.workspace }}/${{ steps.repo_name.outputs.repo }}-macos.zip
+          asset_name: ${{ steps.repo_name.outputs.repo }}-macos.zip
           asset_content_type: application/zip
 
   build-windows:
@@ -42,21 +48,31 @@ jobs:
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
       - run: flutter build windows --release
-      - name: Zip Windows app
+      - name: Set sanitized repo name
+        id: repo_name
         shell: pwsh
         run: |
           $repo = $env:GITHUB_REPOSITORY -replace '/', '-'
-          $out = Join-Path $env:GITHUB_WORKSPACE "$repo-windows.zip"
+          echo "repo=$repo" >> $env:GITHUB_OUTPUT
+      - name: Zip Windows app
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:GITHUB_WORKSPACE "${{ steps.repo_name.outputs.repo }}-windows.zip"
           if (-Not (Test-Path -Path "build\windows\x64\runner\Release")) { Write-Host 'Windows release folder not found'; exit 1 }
           Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath $out -Force
+      - name: Verify Windows zip
+        shell: pwsh
+        run: |
+          Write-Host 'Workspace files:'; Get-ChildItem -Path $env:GITHUB_WORKSPACE -Force -ErrorAction SilentlyContinue
+          if (-Not (Test-Path -Path (Join-Path $env:GITHUB_WORKSPACE "${{ steps.repo_name.outputs.repo }}-windows.zip"))) { Write-Host 'Windows zip not found'; Get-ChildItem -Path $env:GITHUB_WORKSPACE -Force; exit 1 }
       - name: Upload Windows zip to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ github.workspace }}\${{ github.repository }}-windows.zip
-          asset_name: ${{ github.repository }}-windows.zip
+          asset_path: ${{ github.workspace }}/${{ steps.repo_name.outputs.repo }}-windows.zip
+          asset_name: ${{ steps.repo_name.outputs.repo }}-windows.zip
           asset_content_type: application/zip
 
   build-linux:
@@ -72,17 +88,23 @@ jobs:
       - run: flutter config --enable-linux-desktop
       - run: flutter pub get
       - run: flutter build linux --release
+      - name: Set sanitized repo name
+        id: repo_name
+        run: echo "repo=${GITHUB_REPOSITORY//\//-}" >> $GITHUB_OUTPUT
       - name: Zip Linux bundle
         run: |
-          repo="${GITHUB_REPOSITORY//\//-}"
           cd build/linux/x64/release || exit 1
-          zip -r "$GITHUB_WORKSPACE/${repo}-linux.zip" bundle
+          zip -r "$GITHUB_WORKSPACE/${{ steps.repo_name.outputs.repo }}-linux.zip" bundle
+      - name: Verify Linux zip
+        run: |
+          echo "Workspace files:"; ls -la $GITHUB_WORKSPACE || true
+          if [ ! -f "$GITHUB_WORKSPACE/${{ steps.repo_name.outputs.repo }}-linux.zip" ]; then echo "Linux zip not found"; ls -la $GITHUB_WORKSPACE; exit 1; fi
       - name: Upload Linux zip to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ github.workspace }}/${{ github.repository }}-linux.zip
-          asset_name: ${{ github.repository }}-linux.zip
+          asset_path: ${{ github.workspace }}/${{ steps.repo_name.outputs.repo }}-linux.zip
+          asset_name: ${{ steps.repo_name.outputs.repo }}-linux.zip
           asset_content_type: application/zip
