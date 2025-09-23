@@ -1,5 +1,8 @@
 name: Build Flutter Desktop Apps
 
+permissions:
+  contents: write
+
 on:
   release:
     types: [published]
