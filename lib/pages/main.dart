@@ -20,7 +20,7 @@ class _MainPageState extends State<MainPage> {
   int _audioBitrate = 128;
   final List<SourceDTO> _files = [];
   final HandBrakeCliService _cli = HandBrakeCliService();
-  String _status = '';
+  final String _status = '';
 
   final ScrollController _fileListScrollController = ScrollController();
 

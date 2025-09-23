@@ -16,10 +16,20 @@ jobs:
       - run: flutter config --enable-macos-desktop
       - run: flutter pub get
       - run: flutter build macos --release
-      - uses: actions/upload-artifact@v4
+      - name: Zip macOS app
+        run: |
+          cd build/macos/Build/Products/Release
+          zip -r "${{ github.repository }}-macos.zip" *.app
+          mv "${{ github.repository }}-macos.zip" "$GITHUB_WORKSPACE/"
+      - name: Upload macOS zip to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: macos-app
-          path: build/macos/Build/Products/Release/
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ github.workspace }}/${{ github.repository }}-macos.zip
+          asset_name: ${{ github.repository }}-macos.zip
+          asset_content_type: application/zip
 
   build-windows:
     runs-on: windows-latest
@@ -32,10 +42,20 @@ jobs:
       - run: flutter config --enable-windows-desktop
       - run: flutter pub get
       - run: flutter build windows --release
-      - uses: actions/upload-artifact@v4
+      - name: Zip Windows app
+        shell: pwsh
+        run: |
+          $out = "${{ github.workspace }}\${{ github.repository }}-windows.zip"
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath $out -Force
+      - name: Upload Windows zip to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: windows-app
-          path: build/windows/x64/runner/Release/
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ github.workspace }}\${{ github.repository }}-windows.zip
+          asset_name: ${{ github.repository }}-windows.zip
+          asset_content_type: application/zip
 
   build-linux:
     runs-on: ubuntu-latest
@@ -50,7 +70,17 @@ jobs:
       - run: flutter config --enable-linux-desktop
       - run: flutter pub get
       - run: flutter build linux --release
-      - uses: actions/upload-artifact@v4
+      - name: Zip Linux bundle
+        run: |
+          cd build/linux/x64/release
+          zip -r "${{ github.repository }}-linux.zip" bundle
+          mv "${{ github.repository }}-linux.zip" "$GITHUB_WORKSPACE/"
+      - name: Upload Linux zip to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: linux-app
-          path: build/linux/x64/release/bundle/
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ github.workspace }}/${{ github.repository }}-linux.zip
+          asset_name: ${{ github.repository }}-linux.zip
+          asset_content_type: application/zip
